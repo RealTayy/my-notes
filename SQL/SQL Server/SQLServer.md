@@ -8,6 +8,14 @@
 2. [Properties/Constraints](#procon)
 	1. [Common Properties](#properties)
 	2. [Constraints](#constraints)
+3. [Select](#select)
+4. [Where](#where)
+   1. [Operators/Conditions](#woperators)
+5. [Order By](#orderby)
+6. [Modifying Records](#modify)
+   1. [INSERT](#insert)
+   2. [UPDATE](#update)
+   3. [DELETE](#delete)
 
 <a name="datatypes"></a>
 ## Data types
@@ -86,6 +94,108 @@
 | **FOREIGN KEY**     | Requires value reference to parent table. `FOREIGN KEY REFERENCES   parent_table(parent_table_column)`                                               |
 | **CHECK**           | Limits range of values that can be inserted. `col_name INT CHECK   (col_name >= 0)` OR `CONSTRAINT CHK_col CHECK (col_one > 0 AND col_two   = 'ex')` |
 | **DEFAULT**         | Provide default column value if no value specified. `col_name DATETIME   DEFAULT GETDATE()`                                                          |
+
+<a name="select"></a>
+## Select
+The SELECT statement is used to select and returns data from a DB in a result table(result-set)
+
+#### Single Column
+```SQL
+SELECT col_1 FROM table_1 -- returns all of col_1 from table_1
+```
+#### Multiple Columns
+```SQL
+SELECT col_1, col_2 FROM table_1 -- returns all of col_1 and col_2 from table_1
+```
+#### All Columns
+```SQL
+SELECT * FROM table_1 -- returns all columns from table_1
+```
+#### Distinct Columns
+```SQL
+SELECT DISTINCT col_1 FROM table_1 -- returns columns with distinct/different values from table 1
+```
+
+<a name="update"></a>
+#### Update
+UPDATE is used to modify the existing records in a table.
+
+**IMPORTANT!** If you use UPDATE without using WHERE you are going to have a BAD TIME.
+```SQL
+UPDATE table_name
+SET col1 = val1, col2 = val2, col3 = val3
+WHERE condition
+```
+
+<a name="delete"></a>
+#### Delete
+DELETE is used to delete existing records in a table. Duh.
+```
+DELETE FROM table_name
+WHERE condition
+```
+
+**IMPORTANT!** If you use DELETE without using WHERE you are going to have a BAD TIME.
+```SQL
+
+```
+<a name="where"></a>
+## Where
+WHERE is used to filter and extract records the fulfilll a specified condition.
+```SQL
+SELECT * FROM table_name
+WHERE condition;
+```
+
+<a name="woperators"></a>
+#### Operators/Condition
+| Operator Name | Description                                                                                        | Example                                                                                                                                                                              |
+|---------------|----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| =             | Equal                                                                                              |                                                                                                                                                                                      |
+| <>            | Not Equal. Can also use `!=`                                                                       |                                                                                                                                                                                      |
+| >             | Greater than                                                                                       |                                                                                                                                                                                      |
+| <             | Less than                                                                                          |                                                                                                                                                                                      |
+| >=            | Greater than or equal                                                                              |                                                                                                                                                                                      |
+| <=            | Less than or equal                                                                                 |                                                                                                                                                                                      |
+| BETWEEN       | Between a certain range                                                                            | `WHERE col_name BETWEEN val_one AND val_two`                                                                                                                                         |
+| LIKE          | Search for a pattern. % and _ are wildcards. `%` is like `+` In   regex(0/1/1+).  `_` is like `.`. | `WHERE col_name LIKE 'a%' Returns all vales that start with a.`                                                                                                                      |
+| IN            | To specify multiple possible values for a column                                                   | `WHERE col_name IN (val1, val2, val3)`    returns results where col_name is equal to one of the vals. You can   also pass in a `(SELECT statement)` instead of` (val1, val2, val3)`. |
+| AND           | Returns record if all conditions separated by AND is true                                          | `WHERE condition1 AND condition2`                                                                                                                                                    |
+| OR            | Return record if any of conditions separated by OR is true                                         | `WHERE condition1 OR condition2`                                                                                                                                                     |
+| NOT           | Displays record if conditions is false                                                             | `WHERE NOT condition1`                                                                                                                                                               |
+
+<a name="orderby"></a>
+## Order By
+Used to sort result-set in ascending or descending order
+```SQL
+SELECT col_one FROM table_name
+ORDER BY col_one, col_two ASC|DESC;
+```
+```SQL
+SELECT col_one FROM table_name
+ORDER BY col_one ASC, col_two DESC;
+```
+
+<a name="insert"></a>
+## Insert
+Inserts records into a table. Duh.
+```SQL
+INSERT INTO table_name (
+	col_one,
+	col_two,
+	col_three
+)
+VALUES
+	(val1_1, val1_2, val1_3),
+	(val2_1, val2_2, val2_3),
+```
+
+<a name="update></a>
+## Update
+Updates existing records in a table. Duh.
+```SQL
+
+```
 
 #### Things to look into:
 - GO/Batch termination
