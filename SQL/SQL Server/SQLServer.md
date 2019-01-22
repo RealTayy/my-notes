@@ -1,14 +1,19 @@
 # mySQL notes
 ## Table of Contents
+0. [Database/Tables](#dbtable)
+   1. [Database](#database)
+   2. [Table](#table)
 1. [Datatypes](#datatypes)
 	1. [String data types](#stringdt)
 	2. [Number data types](#numberdt)
 	3. [Date data types](#datedt)
-	4. [Other data types ](#otherdt)
+   	4. [Other data types ](#otherdt)
 2. [Properties/Constraints](#procon)
 	1. [Common Properties](#properties)
 	2. [Constraints](#constraints)
 3. [Select](#select)
+   1. [DISTINCT](#sdistinct)
+   2. [TOP/TOP PERCENT/WITH TIES](#stopnmore)
 4. [Where](#where)
    1. [Operators/Conditions](#woperators)
 5. [Order By](#orderby)
@@ -16,6 +21,79 @@
    1. [INSERT](#insert)
    2. [UPDATE](#update)
    3. [DELETE](#delete)
+7. [Functions](#functions)
+   1. [Aggregate Functions](#faggregate)
+      1. [MIN()](#fmin)
+      2. [MAX()](#fmax)
+      3. [COUNT()](#fcount)
+      4. [AVG()](#favg)
+      5. [SUM()](#sum)
+8. [Alias](#alias)
+9. [Joins](#joins)
+   1. [INNER](#jinner)
+   2. [FULL OUTER](#jfullouter)
+   3. [LEFT OUTER](#jleftouter)
+   4. [LEFT UNIQUE](#jleftunique)
+   5. [OUTER UNIQUE](#jouterunique)
+10. [Group by](#groupby)
+    1. HAVING
+<a name="database"></a>
+## Datebase/Tables
+
+<a name="database"></a>
+### Database
+#### Create DB
+```SQL
+CREATE DATABASE db_name;
+```
+
+#### Drop DB
+```SQL
+DROP DATABASE db_name;
+```
+
+#### Backup DB
+```SQL
+BACKUP DATABASE db_name;
+TO DESK = './filepath/backup.bak'
+WITH DIFFERENTIAL; -- This makes a backup with only changed parts but FK IT
+```
+
+<a name="table"></a>
+### Table
+#### Create Table
+```SQL
+CREATE TABLE table_name (
+    col_one datatype properties/constraints,
+    col_two datatype properties/constraints,
+    col_three datatype properties/constraints,
+);
+```
+
+#### Drop/Truncate Table 
+```SQL
+DROP|TRUNCATE TABLE table_name;
+```
+
+#### Alter Table
+
+##### Add Column
+```SQL
+ALTER TABLE table_name
+ADD col_name datatype;
+```
+
+##### Drop Column
+```SQL
+ALTER TABLE table_name
+DROP COLUMN col_name;
+```
+
+##### Alter Column
+```SQL
+ALTER TABLE table_name
+ALTER COLUMN col_name dataype;
+```
 
 <a name="datatypes"></a>
 ## Data types
@@ -111,9 +189,18 @@ SELECT col_1, col_2 FROM table_1 -- returns all of col_1 and col_2 from table_1
 ```SQL
 SELECT * FROM table_1 -- returns all columns from table_1
 ```
-#### Distinct Columns
+<a name="sdistinct"></a>
+#### DISTINCT
 ```SQL
 SELECT DISTINCT col_1 FROM table_1 -- returns columns with distinct/different values from table 1
+```
+<a name="stopnmore"></a>
+#### TOP/TOP PERCENT/WITH TIES
+```SQL
+SELECT TOP 5 * FROM table_1 -- returns top 5 rows from table_1
+```
+```SQL
+SELECT TOP 50 PERCENT * FROM table_1 -- returns top 50 perecent from table_1
 ```
 
 <a name="update"></a>
@@ -149,20 +236,21 @@ WHERE condition;
 
 <a name="woperators"></a>
 #### Operators/Condition
-| Operator Name | Description                                                                                        | Example                                                                                                                                                                              |
-|---------------|----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| =             | Equal                                                                                              |                                                                                                                                                                                      |
-| <>            | Not Equal. Can also use `!=`                                                                       |                                                                                                                                                                                      |
-| >             | Greater than                                                                                       |                                                                                                                                                                                      |
-| <             | Less than                                                                                          |                                                                                                                                                                                      |
-| >=            | Greater than or equal                                                                              |                                                                                                                                                                                      |
-| <=            | Less than or equal                                                                                 |                                                                                                                                                                                      |
-| BETWEEN       | Between a certain range                                                                            | `WHERE col_name BETWEEN val_one AND val_two`                                                                                                                                         |
-| LIKE          | Search for a pattern. % and _ are wildcards. `%` is like `+` In   regex(0/1/1+).  `_` is like `.`. | `WHERE col_name LIKE 'a%' Returns all vales that start with a.`                                                                                                                      |
-| IN            | To specify multiple possible values for a column                                                   | `WHERE col_name IN (val1, val2, val3)`    returns results where col_name is equal to one of the vals. You can   also pass in a `(SELECT statement)` instead of` (val1, val2, val3)`. |
-| AND           | Returns record if all conditions separated by AND is true                                          | `WHERE condition1 AND condition2`                                                                                                                                                    |
-| OR            | Return record if any of conditions separated by OR is true                                         | `WHERE condition1 OR condition2`                                                                                                                                                     |
-| NOT           | Displays record if conditions is false                                                             | `WHERE NOT condition1`                                                                                                                                                               |
+| Operator Name | Description                                                                                                                                    | Example                                                                                                                                                                              |
+|---------------|------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| =             | Equal                                                                                                                                          |                                                                                                                                                                                      |
+| <>            | Not Equal. Can also use `!=`                                                                                                                   |                                                                                                                                                                                      |
+| >             | Greater than                                                                                                                                   |                                                                                                                                                                                      |
+| <             | Less than                                                                                                                                      |                                                                                                                                                                                      |
+| >=            | Greater than or equal                                                                                                                          |                                                                                                                                                                                      |
+| <=            | Less than or equal                                                                                                                             |                                                                                                                                                                                      |
+| BETWEEN       | Between a certain range                                                                                                                        | `WHERE col_name BETWEEN val_one AND val_two`                                                                                                                                         |
+| LIKE          | Search for a pattern. % and _ are wildcards. `%` is like `+` In   regex(0/1/1+).  `_` is like `.`. Also   has `[abc]` and `[^abc]` like regex. | `WHERE col_name LIKE 'a%' Returns all vales that start with a.`                                                                                                                      |
+| IN            | To specify multiple possible values for a column                                                                                               | `WHERE col_name IN (val1, val2, val3)`    returns results where col_name is equal to one of the vals. You can   also pass in a `(SELECT statement)` instead of` (val1, val2, val3)`. |
+| AND           | Returns record if all conditions separated by AND is true                                                                                      | `WHERE condition1 AND condition2`                                                                                                                                                    |
+| OR            | Return record if any of conditions separated by OR is true                                                                                     | `WHERE condition1 OR condition2`                                                                                                                                                     |
+| NOT           | Displays record if conditions is false                                                                                                         | `WHERE NOT condition1`                                                                                                                                                               |
+| IS            | Used for seeing if = null?                                                                                                                     | `WHERE col_name IS NULL`                                                                                                                                                             |
 
 <a name="orderby"></a>
 ## Order By
@@ -197,16 +285,148 @@ Updates existing records in a table. Duh.
 
 ```
 
+<a name="functions"></a>
+## Functions
+
+<a name="faggregate"></a>
+### Aggregate functions
+
+<a name="fmin"></a>
+#### MIN()
+Returns smallest value of selected column
+```SQL
+SELECT MIN(col_name) FROM table_name
+WHERE condition;
+```
+
+<a name="fmax"></a>
+#### MAX()
+Returns largest value of the selected column
+```SQL
+SELECT MAX(col_name) FROM table_name
+WHERE condition;
+```
+
+<a name="fcount"></a>
+#### COUNT()
+Returns number of rows that matches a specifed condition
+```SQL
+SELECT COUNT(col_name) FROM table_name
+WHERE condition;
+```
+
+<a name="favg"></a>
+#### AVG()
+Returns average value of a nemeric column
+```SQL
+SELECT AVG(col_name) FROM table_name
+WHERE condition;
+```
+
+<a name="fsum"></a>
+#### SUM()
+Returns total sum of a numeric column
+```SQL
+SELECT SUM(col_name) FROM table_name
+WHERE condition;
+```
+
+<a name="alias"></a>
+## Alias
+#### Basic Alias
+Gives a column or table a temporary name
+```SQL
+SELECT col_name as col_alias
+FROM table_name as table_alias
+```
+#### Combining Columns as an Alias
+```SQL
+SELECT col_one + ',' + col_two + ',' + col_three
+FROM table_name
+```
+
+<a name="joins"></a>
+## Joins
+https://blog.codinghorror.com/a-visual-explanation-of-sql-joins/
+
+<a name="jinner"></a>
+#### INNER
+![INNER JOIN](./images/inner.png)
+```SQL
+SELECT * FROM TableA
+INNER JOIN TableB
+ON TableA.name = TableB.name
+```
+
+<a name="jfullouter"></a>
+#### FULL OUTER
+![FULL OUTER](./images/fullouter.png)
+```SQL
+SELECT * FROM TableA
+FULL OUTER JOIN TableB
+ON TableA.name = TableB.name
+```
+
+<a name="jleftouter"></a>
+#### LEFT OUTER
+![LEFT OUTER](./images/leftouter.png)
+```SQL
+SELECT * FROM TableA
+LEFT OUTER JOIN TableB
+ON TableA.name = TableB.name
+```
+
+<a name="jleftunique"></a>
+#### LEFT UNIQUE
+![LEFT UNIQUE](./images/leftunique.png)
+```SQL
+SELECT * FROM TableA
+LEFT OUTER JOIN TableB
+ON TableA.name = TableB.name
+WHERE TableB.id IS null
+```
+
+<a name="jouterunique"></a>
+#### OUTER UNIQUE
+![OUTER UNIQUE](./images/outerunique.png)
+```SQL
+SELECT * FROM TableA
+FULL OUTER JOIN TableB
+ON TableA.name = TableB.name
+WHERE TableA.id IS null
+OR TableB.id IS null
+```
+
+<a name="groupby"></a>
+## Group By
+GROUP BY is often used with aggregate functions (COUNT, MAX, MIN, SUM, AVG) to group the result-set.
+```SQL
+SELECT col_name(s)
+FROM table_name
+GROUP BY col_name(s)
+```
+#### HAVING
+HAVING filters the group results created by GROUP BY
+```SQL
+SELECT expression
+FROM table_name
+GROUP BY col_name(s)
+HAVING condition --EX count(col_name)
+```
+
+
+
+## Other stuff
 #### Things to look into:
 - GO/Batch termination
 - Transactions
 - Rollbacks
-- ALTER
-- UPDATE
 - FOREIGN KEYS > ON UPDATE/DELETE > CASCADE/NO ACTION/SET NULL/SET DEFAULT
 - Stored procedures
 - Triggers
-- Functions
 - GETDATE()
+- <> the fk is that?
+- Self joins
+- HAVING
 
 https://www.sqlshack.com/commonly-used-sql-server-constraints-not-null-unique-primary-key/
