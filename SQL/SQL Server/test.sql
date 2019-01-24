@@ -1,10 +1,14 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS companies;
+GO
+
 CREATE TABLE companies (
     ID				INT PRIMARY KEY Identity(1,1),
     company_name	char(32) NOT NULL,
     industry		char(32) NOT NULL
 );																													
-
 GO
+
 CREATE TABLE users (
     ID			INT PRIMARY KEY Identity(1,1),
     user_name	char(32) NOT NULL,    
@@ -13,6 +17,7 @@ CREATE TABLE users (
     experience	INT NOT NULL,
 );
 GO
+
 INSERT INTO companies (
     company_name,
     industry
@@ -22,12 +27,14 @@ VALUES
     ('Hogwarts',	'Education'),
     ('Trilogy',		'Education');
 GO
+
 INSERT INTO users (
     user_name,
     position,
     company_id,
     experience
 )
+
 VALUES
     ('Shane Butts',			'Vice President',	1,		20),
     ('The Mai',				'JR SE',			1,		2),
@@ -40,5 +47,3 @@ VALUES
     ('Michelle Bury',		'SSM',				3,		11),
 	('Mystery Man',			'Nobody',			NULL,	50);
 GO
-SELECT * FROM users;
-SELECT * FROM companies;

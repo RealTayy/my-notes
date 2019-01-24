@@ -1,4 +1,4 @@
-# mySQL notes
+# SQL Server notes
 ## Table of Contents
 0. [Database/Tables](#dbtable)
    1. [Database](#database)
@@ -11,32 +11,40 @@
 2. [Properties/Constraints](#procon)
 	1. [Common Properties](#properties)
 	2. [Constraints](#constraints)
-3. [Select](#select)
+3. [Select/Sets/ResultSet](#select)
    1. [DISTINCT](#sdistinct)
-   2. [TOP/TOP PERCENT/WITH TIES](#stopnmore)
+   2. [TOP/TOP PERCENT/WITH TIES](#stopnmore)   
+   3. [Set Operations](#soperations)
+        1. [UNION/UNIONALL](#sintersect)
+        2. [INTERSECT](#sintersect)
+        2. [EXCEPT](#sintersect)
 4. [Where](#where)
    1. [Operators/Conditions](#woperators)
 5. [Order By](#orderby)
-6. [Modifying Records](#modify)
+6. [Offset/Fetch](#offset)
+7. [Modifying Records](#modify)
    1. [INSERT](#insert)
    2. [UPDATE](#update)
    3. [DELETE](#delete)
-7. [Functions](#functions)
+8. [Functions](#functions)
    1. [Aggregate Functions](#faggregate)
-      1. [MIN()](#fmin)
-      2. [MAX()](#fmax)
-      3. [COUNT()](#fcount)
-      4. [AVG()](#favg)
-      5. [SUM()](#sum)
-8. [Alias](#alias)
-9. [Joins](#joins)
-   1. [INNER](#jinner)
-   2. [FULL OUTER](#jfullouter)
-   3. [LEFT OUTER](#jleftouter)
-   4. [LEFT UNIQUE](#jleftunique)
-   5. [OUTER UNIQUE](#jouterunique)
-10. [Group by](#groupby)
-    1. HAVING
+        1. [MIN()](#fmin)
+        2. [MAX()](#fmax)
+        3. [COUNT()](#fcount)
+        4. [AVG()](#favg)
+        5. [SUM()](#sum)
+    2. [String Functions](#fstring)
+        1. [SUBSTRING()](#fsubstring)
+        2. [LEN()](#flen)
+9. [Alias](#alias)
+10. [Joins](#joins)
+    1. [INNER](#jinner)
+    2. [FULL OUTER](#jfullouter)
+    3. [LEFT OUTER](#jleftouter)
+    4. [LEFT UNIQUE](#jleftunique)
+    5. [OUTER UNIQUE](#jouterunique)
+11. [Group by](#groupby)
+    1. [HAVING](#having)
 <a name="database"></a>
 ## Datebase/Tables
 
@@ -190,12 +198,12 @@ SELECT col_1, col_2 FROM table_1 -- returns all of col_1 and col_2 from table_1
 SELECT * FROM table_1 -- returns all columns from table_1
 ```
 <a name="sdistinct"></a>
-#### DISTINCT
+### DISTINCT
 ```SQL
 SELECT DISTINCT col_1 FROM table_1 -- returns columns with distinct/different values from table 1
 ```
 <a name="stopnmore"></a>
-#### TOP/TOP PERCENT/WITH TIES
+### TOP/TOP PERCENT/WITH TIES
 ```SQL
 SELECT TOP 5 * FROM table_1 -- returns top 5 rows from table_1
 ```
@@ -203,29 +211,55 @@ SELECT TOP 5 * FROM table_1 -- returns top 5 rows from table_1
 SELECT TOP 50 PERCENT * FROM table_1 -- returns top 50 perecent from table_1
 ```
 
-<a name="update"></a>
-#### Update
-UPDATE is used to modify the existing records in a table.
+<a name="soperations">
+### Set Operations
+Allows results-set to be combined into a single result set
 
-**IMPORTANT!** If you use UPDATE without using WHERE you are going to have a BAD TIME.
+https://en.wikipedia.org/wiki/Set_operations_(SQL)
+
+<a name="sunion"></a>
+#### UNION/UNION ALL
+UNION is used to combine the result sets of 2 or more SELECT statements. Must have same # of expressions, and data types, removes duplicate rows.
 ```SQL
-UPDATE table_name
-SET col1 = val1, col2 = val2, col3 = val3
+SELECT expression(s)
+FROM tables
+WHERE condition
+UNION
+SELECT expression(s)
+FROM tables
+WHERE condition
+```
+*** Use `UNION ALL` if you don't want to remove duplicates.
+
+<a name="sintersect"></a>
+#### INTERSECT
+Like UNION but only returns common records.
+```SQL
+SELECT expression(s)
+FROM tables
+WHERE condition
+INTERSECT
+SELECT expression(s)
+FROM tables
 WHERE condition
 ```
 
-<a name="delete"></a>
-#### Delete
-DELETE is used to delete existing records in a table. Duh.
-```
-DELETE FROM table_name
+<a name="sexcept"></a>
+#### EXCEPT
+Like UNION but only returns uncommon records.
+```SQL
+SELECT expression(s)
+FROM tables
+WHERE condition
+EXCEPT
+SELECT expression(s)
+FROM tables
 WHERE condition
 ```
 
-**IMPORTANT!** If you use DELETE without using WHERE you are going to have a BAD TIME.
-```SQL
+<a name="sexcept"></a>
+#### EXCEPT
 
-```
 <a name="where"></a>
 ## Where
 WHERE is used to filter and extract records the fulfilll a specified condition.
@@ -235,22 +269,23 @@ WHERE condition;
 ```
 
 <a name="woperators"></a>
-#### Operators/Condition
+### Operators/Conditions
 | Operator Name | Description                                                                                                                                    | Example                                                                                                                                                                              |
 |---------------|------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| =             | Equal                                                                                                                                          |                                                                                                                                                                                      |
-| <>            | Not Equal. Can also use `!=`                                                                                                                   |                                                                                                                                                                                      |
-| >             | Greater than                                                                                                                                   |                                                                                                                                                                                      |
-| <             | Less than                                                                                                                                      |                                                                                                                                                                                      |
-| >=            | Greater than or equal                                                                                                                          |                                                                                                                                                                                      |
-| <=            | Less than or equal                                                                                                                             |                                                                                                                                                                                      |
-| BETWEEN       | Between a certain range                                                                                                                        | `WHERE col_name BETWEEN val_one AND val_two`                                                                                                                                         |
-| LIKE          | Search for a pattern. % and _ are wildcards. `%` is like `+` In   regex(0/1/1+).  `_` is like `.`. Also   has `[abc]` and `[^abc]` like regex. | `WHERE col_name LIKE 'a%' Returns all vales that start with a.`                                                                                                                      |
-| IN            | To specify multiple possible values for a column                                                                                               | `WHERE col_name IN (val1, val2, val3)`    returns results where col_name is equal to one of the vals. You can   also pass in a `(SELECT statement)` instead of` (val1, val2, val3)`. |
-| AND           | Returns record if all conditions separated by AND is true                                                                                      | `WHERE condition1 AND condition2`                                                                                                                                                    |
-| OR            | Return record if any of conditions separated by OR is true                                                                                     | `WHERE condition1 OR condition2`                                                                                                                                                     |
-| NOT           | Displays record if conditions is false                                                                                                         | `WHERE NOT condition1`                                                                                                                                                               |
-| IS            | Used for seeing if = null?                                                                                                                     | `WHERE col_name IS NULL`                                                                                                                                                             |
+| **=**         | Equal                                                                                                                                          |                                                                                                                                                                                      |
+| **<>**        | Not Equal. Can also use `!=`. `!>` and `!<` also exist but like... why?                                                                        |                                                                                                                                                                                      |
+| **>**         | Greater than                                                                                                                                   |                                                                                                                                                                                      |
+| **<**         | Less than                                                                                                                                      |                                                                                                                                                                                      |
+| **>=**        | Greater than or equal                                                                                                                          |                                                                                                                                                                                      |
+| **<=**        | Less than or equal                                                                                                                             |                                                                                                                                                                                      |
+| **BETWEEN**   | Between a certain range. Bottom top and bottom are INCLUSIVE. Works with dates as well `YYYY/MM/DD`                                            | `WHERE col_name BETWEEN val_one AND val_two`                                                                                                                                         |
+| **LIKE**      | Search for a pattern. % and _ are wildcards. `%` is like `+` In   regex(0/1/1+).  `_` is like `.`. Also   has `[abc]` and `[^abc]` like regex. | `WHERE col_name LIKE 'a%' Returns all vales that start with a.`                                                                                                                      |
+| **IN()**      | To specify multiple possible values for a column                                                                                               | `WHERE col_name IN (val1, val2, val3)`    returns results where col_name is equal to one of the vals. You can   also pass in a `(SELECT statement)` instead of` (val1, val2, val3)`. |
+| **AND**       | Returns record if all conditions separated by AND is true                                                                                      | `WHERE condition1 AND condition2`                                                                                                                                                    |
+| **OR**        | Return record if any of conditions separated by OR is true                                                                                     | `WHERE condition1 OR condition2`                                                                                                                                                     |
+| **NOT**       | Displays record if conditions is false                                                                                                         | `WHERE NOT condition1`                                                                                                                                                               |
+| **IS**        | Used for seeing if = null? AKA `IS NULL` or `IS NOT NULL`                                                                                      | `WHERE col_name IS NULL`                                                                                                                                                             |
+| **EXISTS**    | Condition is met if subquery returns at least one row. THIS IS INEFFICENT THOUGH                                                               | `WHERE EXISTS (subquery)                                                                                                                                                             |
 
 <a name="orderby"></a>
 ## Order By
@@ -264,8 +299,21 @@ SELECT col_one FROM table_name
 ORDER BY col_one ASC, col_two DESC;
 ```
 
+<a name="offset"></a>
+## Offset/Fetch
+```SQL
+SELECT col_name(s)
+FROM table_name
+ORDER BY col_name(s) -- Required
+OFFSET n ROWS
+FETCH NEXT m ROWS ONLY -- Optional
+```
+
+<a name="modify"></a>
+## Modifying Records
+
 <a name="insert"></a>
-## Insert
+#### Insert
 Inserts records into a table. Duh.
 ```SQL
 INSERT INTO table_name (
@@ -277,12 +325,64 @@ VALUES
 	(val1_1, val1_2, val1_3),
 	(val2_1, val2_2, val2_3),
 ```
-
-<a name="update></a>
-## Update
-Updates existing records in a table. Duh.
+Insert with default values
 ```SQL
+INSERT INTO table_name (
+    col_one,
+    col_two,
+    col_three
+)
+DEFAULT VALUES;
+```
+Insert using sub-select.
+```SQL
+INSERT [ TOP(top_value) [PERCENT]]
+INTO table_name (
+    col_one,
+    col_two,
+    col_three
+)
+SELECT expression
+FROM source_table
+WHERE conditions
+```
 
+<a name="update"></a>
+#### Update
+UPDATE is used to modify the existing records in a table.
+
+**IMPORTANT!** If you use UPDATE without using WHERE you are going to have a BAD TIME.
+```SQL
+UPDATE table_name
+SET col1 = val1, col2 = val2, col3 = val3
+WHERE condition
+```
+Update using sub-select
+```SQL
+UPDATE table1
+SET col1 = (SELECT first_name
+            FROM table2
+            WHERE condition)
+WHERE condition;
+```
+Update using join
+```SQL
+UPDATE table1 t1
+SET t1.col1 = t2.col1
+FROM t1
+INNER JOIN t2
+ON (t1.col2 = t2.col2)
+WHERE condition
+```
+
+<a name="delete"></a>
+#### Delete
+DELETE is used to delete existing records in a table. Duh.
+
+**IMPORTANT!** If you use DELETE without using WHERE you are going to have a BAD TIME.
+```SQL
+DELETE FROM table_name
+WHERE condition
 ```
 
 <a name="functions"></a>
@@ -329,6 +429,21 @@ Returns total sum of a numeric column
 ```SQL
 SELECT SUM(col_name) FROM table_name
 WHERE condition;
+```
+
+<a name="fstring"></a>
+### String functions
+
+<a name="fsubstring"></a>
+#### SUBSTRING()
+```SQL
+SUBSTRING(string, start, length)
+```
+
+<a name="flen"></a>
+#### LEN()
+```SQL
+LEN(string)
 ```
 
 <a name="alias"></a>
@@ -405,6 +520,8 @@ SELECT col_name(s)
 FROM table_name
 GROUP BY col_name(s)
 ```
+
+<a name="having"></a>
 #### HAVING
 HAVING filters the group results created by GROUP BY
 ```SQL
@@ -414,10 +531,9 @@ GROUP BY col_name(s)
 HAVING condition --EX count(col_name)
 ```
 
-
-
 ## Other stuff
 #### Things to look into:
+- ROW NUMBER
 - GO/Batch termination
 - Transactions
 - Rollbacks
@@ -425,8 +541,7 @@ HAVING condition --EX count(col_name)
 - Stored procedures
 - Triggers
 - GETDATE()
-- <> the fk is that?
 - Self joins
-- HAVING
-
-https://www.sqlshack.com/commonly-used-sql-server-constraints-not-null-unique-primary-key/
+- Insert DEFAULT VALUES
+- TRUNCATE - WITH PARTITIONS
+- PIVOT
