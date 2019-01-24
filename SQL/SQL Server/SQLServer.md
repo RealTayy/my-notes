@@ -535,7 +535,7 @@ HAVING condition --EX count(col_name)
 #### Things to look into:
 - ROW NUMBER
 - GO/Batch termination
-- Transactions
+- Transactions/commit/rollbacks
 - Rollbacks
 - FOREIGN KEYS > ON UPDATE/DELETE > CASCADE/NO ACTION/SET NULL/SET DEFAULT
 - Stored procedures
@@ -545,3 +545,34 @@ HAVING condition --EX count(col_name)
 - Insert DEFAULT VALUES
 - TRUNCATE - WITH PARTITIONS
 - PIVOT
+- CASE
+- IF_ELSE
+- IIF (Ternary)
+- CAST/CONVERT (DATETIME)
+
+```SQL
+-- #7: What is the purpose of the following trigger?
+CREATE TRIGGER trgAfterInsert ON [dbo].[Clients] -- Creates a trigger on Clients table.
+FOR INSERT -- Trigger runs after inserting into Clients.
+AS         -- I don't know what this does. It's just part of trigger synthax?
+	declare @ClientID int; -- Create local int variable named @ClientID .
+	declare @ClientName nvarchar(200); -- Create local nvarvhar named @ClientName with 200 char limit.
+	
+select @ClientID=i.ClientID from inserted i;     -- Set @ClientID to inserted row's ClientID field.
+select @ClientName=i.ClientName from inserted i; -- Set @ClientName to inserted row's ClientName field	.
+insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime) -- Start insert into ClientAudit Table.
+values (@ClientID, @ClientName, SUSER_SNAME(),'Inserted', getdate())       -- Insert Client ID/Name, SID of person inserting, and DATETIME of when.
+
+-- #8: Any comment about the Insert trigger above? How can we capture changes to Clients?
+CREATE TRIGGER trgAfterInsert ON [dbo].[Clients]
+FOR INSERT, UPDATE
+AS
+	declare @ClientID int;
+	declare @ClientName nvarchar(200);
+    declare @Action varchar(200);
+
+set @Action = IFF(EXISTS(SELECT * FROM deleted), 'Updated', 'Inserted');
+select @ClientID=i.ClientID, @ClientName=i.ClientName from inserted i;
+insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime)
+values (@ClientID, @ClientName, SUSER_SNAME(), @Action, getdate());
+```

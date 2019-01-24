@@ -1,0 +1,26 @@
+USE FAKEBANK
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS customers;
+
+CREATE TABLE customers (
+    ID INT PRIMARY KEY IDENTITY(1,1),
+    firstName VARCHAR(200) NOT NULL,
+    lastName VARCHAR(200) NOT NULL,
+    madeAt DATETIME DEFAULT GETDATE()
+)
+
+CREATE TABLE accounts (
+    ID INT PRIMARY KEY IDENTITY(1,1),
+    customerID INT REFERENCES customers(ID),
+    balance DECIMAL(18,4) NOT NULL DEFAULT 0,
+    accountType VARCHAR(200) NOT NULL,
+    madeAt DATETIME DEFAULT GETDATE()
+)
+
+CREATE TABLE transactions (
+    ID INT PRIMARY KEY IDENTITY(1,1),
+    accountID INT REFERENCES accounts(ID),
+    amount DECIMAL(18,4) NOT NULL,
+    madeAt DATETIME DEFAULT GETDATE()
+)
