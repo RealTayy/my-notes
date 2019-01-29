@@ -1,16 +1,33 @@
--- Tables:
--- * ClientAudit with columns ClientID int, ClientName nvarchar(200),UserID nvarchar(200), Action nvarchar(20), ActionTime datetime
+SELECT h.hacker_id, h.name, COUNT(c.challenge_id) challenges_created
+FROM Hackers h
+JOIN Challenges c
+ON h.hacker_id = c.hacker_id
+GROUP BY h.hacker_id, h.name
+ORDER BY
+  challenges_created DESC,
+  h.hacker_id
 
--- #7: What is the purpose of the following trigger?
--- CREATE TRIGGER trgAfterInsert ON [dbo].[Clients] 
--- FOR INSERT
--- AS
--- 	declare @ClientID int;
--- 	declare @ClientName nvarchar(200);	
-	
--- select @ClientID=i.ClientID from inserted i;	
--- select @ClientName=i.ClientName from inserted i;	
--- insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime)
--- values (@ClientID, @ClientName, SUSER_SNAME(),‘Inserted’, getdate())
+SELECT MAX(challenges_created) as max_challenges
+FROM 
+  (SELECT COUNT(c.challenge_id) challenges_created
+  FROM Hackers h
+  JOIN Challenges c
+  ON h.hacker_id = c.hacker_id
+  GROUP BY h.hacker_id, h.name) t1
 
--- #8: Any comment about the Insert trigger above? How can we capture changes to Clients?
+
+
+  SELECT challenges_created, COUNT(challenges_created) as people
+FROM 
+  (SELECT h.hacker_id, h.name, COUNT(c.challenge_id) challenges_created
+  FROM Hackers h
+  JOIN Challenges c
+  ON h.hacker_id = c.hacker_id
+  GROUP BY h.hacker_id, h.name) t1
+GROUP BY challenges_created
+HAVING
+  COUNT(challenges_created) = 1
+  OR challenges_created = MAX(challenges_created)
+ORDER BY
+  challenges_created DESC,
+  people DESC

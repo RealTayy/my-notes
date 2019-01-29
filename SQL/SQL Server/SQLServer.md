@@ -1,4 +1,9 @@
+<a id="toc"></a>
 # SQL Server notes
+<div style="position:fixed;top:0;width:100%;text-align:center;z-index:1">
+    <a href="#toc" style="position:relative;z-index:1">Back to Top ↑</a>
+</div>
+
 ## Table of Contents
 0. [Database/Tables](#dbtable)
    1. [Database](#database)
@@ -45,10 +50,10 @@
     5. [OUTER UNIQUE](#jouterunique)
 11. [Group by](#groupby)
     1. [HAVING](#having)
-<a name="database"></a>
+<a id="database"></a>
 ## Datebase/Tables
 
-<a name="database"></a>
+<a id="database"></a>
 ### Database
 #### Create DB
 ```SQL
@@ -67,7 +72,7 @@ TO DESK = './filepath/backup.bak'
 WITH DIFFERENTIAL; -- This makes a backup with only changed parts but FK IT
 ```
 
-<a name="table"></a>
+<a id="table"></a>
 ### Table
 #### Create Table
 ```SQL
@@ -103,10 +108,10 @@ ALTER TABLE table_name
 ALTER COLUMN col_name dataype;
 ```
 
-<a name="datatypes"></a>
+<a id="datatypes"></a>
 ## Data types
 
-<a name="stringdt"></a>
+<a id="stringdt"></a>
 ### String data types
 | Data type          | Description                                    | Max size             | Storage                  |
 |--------------------|------------------------------------------------|----------------------|--------------------------|
@@ -123,7 +128,7 @@ ALTER COLUMN col_name dataype;
 | **varbinary(max)** | Variable width binary string.                  | 2GB                  |                          |
 | **image**          | Variable width binary string.                  | 2GB                  |                          |
 
-<a name="numberdt"></a>
+<a id="numberdt"></a>
 ### Number data types
 | Data type         | Description                                 | Storage    |
 |-------------------|---------------------------------------------|------------|
@@ -139,7 +144,7 @@ ALTER COLUMN col_name dataype;
 | **float(n)**      | Really really big floating precision number |            |
 | **real**          | Really really big floating precision number |            |
 
-<a name="datedt"></a>
+<a id="datedt"></a>
 ### Date data types
 | Data type          | Description                                                                                                                                                                                                                         | Storage    |
 |--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
@@ -151,7 +156,7 @@ ALTER COLUMN col_name dataype;
 | **datetimeoffset** | The same as datetime2 with the addition of a time zone offset                                                                                                                                                                       | 8-10 bytes |
 | **timestamp**      | Stores a unique number that gets   updated every time a row gets created or modified. The timestamp value is   based upon an internal clock and does not correspond to real time. Each table   may have only one timestamp variable |            |
 
-<a name="otherdt"></a>
+<a id="otherdt"></a>
 ### Other data types
 | Data type            | Description                                                                                 |
 |----------------------|---------------------------------------------------------------------------------------------|
@@ -161,16 +166,16 @@ ALTER COLUMN col_name dataype;
 | **cursor**           | Stores a reference to a cursor used for database operations                                 |
 | **table**            | Stores a result-set for later processing                                                    |
 
-<a name="procon"></a>
+<a id="procon"></a>
 ## Properties/Constraints
 
-<a name="properties"></a>
+<a id="properties"></a>
 ### Common Properties
 | Property Name      | Description                                                                            |
 |--------------------|----------------------------------------------------------------------------------------|
 | **Identity(s, i)** | Create auto incrementing column for table. *s* is the seed and *i* is the   increment. |
 
-<a name="constraints"></a>
+<a id="constraints"></a>
 ### Constraints
 | Constraint Name     | Description                                                                                                                                          |
 |---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -181,7 +186,7 @@ ALTER COLUMN col_name dataype;
 | **CHECK**           | Limits range of values that can be inserted. `col_name INT CHECK   (col_name >= 0)` OR `CONSTRAINT CHK_col CHECK (col_one > 0 AND col_two   = 'ex')` |
 | **DEFAULT**         | Provide default column value if no value specified. `col_name DATETIME   DEFAULT GETDATE()`                                                          |
 
-<a name="select"></a>
+<a id="select"></a>
 ## Select
 The SELECT statement is used to select and returns data from a DB in a result table(result-set)
 
@@ -197,12 +202,12 @@ SELECT col_1, col_2 FROM table_1 -- returns all of col_1 and col_2 from table_1
 ```SQL
 SELECT * FROM table_1 -- returns all columns from table_1
 ```
-<a name="sdistinct"></a>
+<a id="sdistinct"></a>
 ### DISTINCT
 ```SQL
 SELECT DISTINCT col_1 FROM table_1 -- returns columns with distinct/different values from table 1
 ```
-<a name="stopnmore"></a>
+<a id="stopnmore"></a>
 ### TOP/TOP PERCENT/WITH TIES
 ```SQL
 SELECT TOP 5 * FROM table_1 -- returns top 5 rows from table_1
@@ -211,13 +216,13 @@ SELECT TOP 5 * FROM table_1 -- returns top 5 rows from table_1
 SELECT TOP 50 PERCENT * FROM table_1 -- returns top 50 perecent from table_1
 ```
 
-<a name="soperations">
+<a id="soperations">
 ### Set Operations
 Allows results-set to be combined into a single result set
 
 https://en.wikipedia.org/wiki/Set_operations_(SQL)
 
-<a name="sunion"></a>
+<a id="sunion"></a>
 #### UNION/UNION ALL
 UNION is used to combine the result sets of 2 or more SELECT statements. Must have same # of expressions, and data types, removes duplicate rows.
 ```SQL
@@ -231,7 +236,7 @@ WHERE condition
 ```
 *** Use `UNION ALL` if you don't want to remove duplicates.
 
-<a name="sintersect"></a>
+<a id="sintersect"></a>
 #### INTERSECT
 Like UNION but only returns common records.
 ```SQL
@@ -244,7 +249,7 @@ FROM tables
 WHERE condition
 ```
 
-<a name="sexcept"></a>
+<a id="sexcept"></a>
 #### EXCEPT
 Like UNION but only returns uncommon records.
 ```SQL
@@ -257,10 +262,10 @@ FROM tables
 WHERE condition
 ```
 
-<a name="sexcept"></a>
+<a id="sexcept"></a>
 #### EXCEPT
 
-<a name="where"></a>
+<a id="where"></a>
 ## Where
 WHERE is used to filter and extract records the fulfilll a specified condition.
 ```SQL
@@ -268,7 +273,7 @@ SELECT * FROM table_name
 WHERE condition;
 ```
 
-<a name="woperators"></a>
+<a id="woperators"></a>
 ### Operators/Conditions
 | Operator Name | Description                                                                                                                                    | Example                                                                                                                                                                              |
 |---------------|------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -287,7 +292,7 @@ WHERE condition;
 | **IS**        | Used for seeing if = null? AKA `IS NULL` or `IS NOT NULL`                                                                                      | `WHERE col_name IS NULL`                                                                                                                                                             |
 | **EXISTS**    | Condition is met if subquery returns at least one row. THIS IS INEFFICENT THOUGH                                                               | `WHERE EXISTS (subquery)                                                                                                                                                             |
 
-<a name="orderby"></a>
+<a id="orderby"></a>
 ## Order By
 Used to sort result-set in ascending or descending order
 ```SQL
@@ -299,7 +304,7 @@ SELECT col_one FROM table_name
 ORDER BY col_one ASC, col_two DESC;
 ```
 
-<a name="offset"></a>
+<a id="offset"></a>
 ## Offset/Fetch
 ```SQL
 SELECT col_name(s)
@@ -309,10 +314,10 @@ OFFSET n ROWS
 FETCH NEXT m ROWS ONLY -- Optional
 ```
 
-<a name="modify"></a>
+<a id="modify"></a>
 ## Modifying Records
 
-<a name="insert"></a>
+<a id="insert"></a>
 #### Insert
 Inserts records into a table. Duh.
 ```SQL
@@ -347,7 +352,7 @@ FROM source_table
 WHERE conditions
 ```
 
-<a name="update"></a>
+<a id="update"></a>
 #### Update
 UPDATE is used to modify the existing records in a table.
 
@@ -375,7 +380,7 @@ ON (t1.col2 = t2.col2)
 WHERE condition
 ```
 
-<a name="delete"></a>
+<a id="delete"></a>
 #### Delete
 DELETE is used to delete existing records in a table. Duh.
 
@@ -385,13 +390,13 @@ DELETE FROM table_name
 WHERE condition
 ```
 
-<a name="functions"></a>
+<a id="functions"></a>
 ## Functions
 
-<a name="faggregate"></a>
+<a id="faggregate"></a>
 ### Aggregate functions
 
-<a name="fmin"></a>
+<a id="fmin"></a>
 #### MIN()
 Returns smallest value of selected column
 ```SQL
@@ -399,7 +404,7 @@ SELECT MIN(col_name) FROM table_name
 WHERE condition;
 ```
 
-<a name="fmax"></a>
+<a id="fmax"></a>
 #### MAX()
 Returns largest value of the selected column
 ```SQL
@@ -407,7 +412,7 @@ SELECT MAX(col_name) FROM table_name
 WHERE condition;
 ```
 
-<a name="fcount"></a>
+<a id="fcount"></a>
 #### COUNT()
 Returns number of rows that matches a specifed condition
 ```SQL
@@ -415,7 +420,7 @@ SELECT COUNT(col_name) FROM table_name
 WHERE condition;
 ```
 
-<a name="favg"></a>
+<a id="favg"></a>
 #### AVG()
 Returns average value of a nemeric column
 ```SQL
@@ -423,7 +428,7 @@ SELECT AVG(col_name) FROM table_name
 WHERE condition;
 ```
 
-<a name="fsum"></a>
+<a id="fsum"></a>
 #### SUM()
 Returns total sum of a numeric column
 ```SQL
@@ -431,22 +436,22 @@ SELECT SUM(col_name) FROM table_name
 WHERE condition;
 ```
 
-<a name="fstring"></a>
+<a id="fstring"></a>
 ### String functions
 
-<a name="fsubstring"></a>
+<a id="fsubstring"></a>
 #### SUBSTRING()
 ```SQL
 SUBSTRING(string, start, length)
 ```
 
-<a name="flen"></a>
+<a id="flen"></a>
 #### LEN()
 ```SQL
 LEN(string)
 ```
 
-<a name="alias"></a>
+<a id="alias"></a>
 ## Alias
 #### Basic Alias
 Gives a column or table a temporary name
@@ -460,11 +465,11 @@ SELECT col_one + ',' + col_two + ',' + col_three
 FROM table_name
 ```
 
-<a name="joins"></a>
+<a id="joins"></a>
 ## Joins
 https://blog.codinghorror.com/a-visual-explanation-of-sql-joins/
 
-<a name="jinner"></a>
+<a id="jinner"></a>
 #### INNER
 ![INNER JOIN](./images/inner.png)
 ```SQL
@@ -473,7 +478,7 @@ INNER JOIN TableB
 ON TableA.name = TableB.name
 ```
 
-<a name="jfullouter"></a>
+<a id="jfullouter"></a>
 #### FULL OUTER
 ![FULL OUTER](./images/fullouter.png)
 ```SQL
@@ -482,7 +487,7 @@ FULL OUTER JOIN TableB
 ON TableA.name = TableB.name
 ```
 
-<a name="jleftouter"></a>
+<a id="jleftouter"></a>
 #### LEFT OUTER
 ![LEFT OUTER](./images/leftouter.png)
 ```SQL
@@ -491,7 +496,7 @@ LEFT OUTER JOIN TableB
 ON TableA.name = TableB.name
 ```
 
-<a name="jleftunique"></a>
+<a id="jleftunique"></a>
 #### LEFT UNIQUE
 ![LEFT UNIQUE](./images/leftunique.png)
 ```SQL
@@ -501,7 +506,7 @@ ON TableA.name = TableB.name
 WHERE TableB.id IS null
 ```
 
-<a name="jouterunique"></a>
+<a id="jouterunique"></a>
 #### OUTER UNIQUE
 ![OUTER UNIQUE](./images/outerunique.png)
 ```SQL
@@ -512,7 +517,7 @@ WHERE TableA.id IS null
 OR TableB.id IS null
 ```
 
-<a name="groupby"></a>
+<a id="groupby"></a>
 ## Group By
 GROUP BY is often used with aggregate functions (COUNT, MAX, MIN, SUM, AVG) to group the result-set.
 ```SQL
@@ -521,7 +526,7 @@ FROM table_name
 GROUP BY col_name(s)
 ```
 
-<a name="having"></a>
+<a id="having"></a>
 #### HAVING
 HAVING filters the group results created by GROUP BY
 ```SQL
@@ -549,30 +554,3 @@ HAVING condition --EX count(col_name)
 - IF_ELSE
 - IIF (Ternary)
 - CAST/CONVERT (DATETIME)
-
-```SQL
--- #7: What is the purpose of the following trigger?
-CREATE TRIGGER trgAfterInsert ON [dbo].[Clients] -- Creates a trigger on Clients table.
-FOR INSERT -- Trigger runs after inserting into Clients.
-AS         -- I don't know what this does. It's just part of trigger synthax?
-	declare @ClientID int; -- Create local int variable named @ClientID .
-	declare @ClientName nvarchar(200); -- Create local nvarvhar named @ClientName with 200 char limit.
-	
-select @ClientID=i.ClientID from inserted i;     -- Set @ClientID to inserted row's ClientID field.
-select @ClientName=i.ClientName from inserted i; -- Set @ClientName to inserted row's ClientName field	.
-insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime) -- Start insert into ClientAudit Table.
-values (@ClientID, @ClientName, SUSER_SNAME(),'Inserted', getdate())       -- Insert Client ID/Name, SID of person inserting, and DATETIME of when.
-
--- #8: Any comment about the Insert trigger above? How can we capture changes to Clients?
-CREATE TRIGGER trgAfterInsert ON [dbo].[Clients]
-FOR INSERT, UPDATE
-AS
-	declare @ClientID int;
-	declare @ClientName nvarchar(200);
-    declare @Action varchar(200);
-
-set @Action = IFF(EXISTS(SELECT * FROM deleted), 'Updated', 'Inserted');
-select @ClientID=i.ClientID, @ClientName=i.ClientName from inserted i;
-insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime)
-values (@ClientID, @ClientName, SUSER_SNAME(), @Action, getdate());
-```

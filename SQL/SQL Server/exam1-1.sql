@@ -99,6 +99,7 @@ CREATE TABLE ClientAudit (
   Action nvarchar(20),
   ActionTime datetime
 );
+GO
 
 -- #7: What is the purpose of the following trigger?
 CREATE TRIGGER trgAfterInsert ON [dbo].[Clients] -- Creates a trigger on Clients table.
@@ -111,16 +112,29 @@ select @ClientID=i.ClientID from inserted i;     -- Set @ClientID to inserted ro
 select @ClientName=i.ClientName from inserted i; -- Set @ClientName to inserted row's ClientName field	.
 insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime) -- Start insert into ClientAudit Table.
 values (@ClientID, @ClientName, SUSER_SNAME(),'Inserted', getdate())       -- Insert Client ID/Name, SID of person inserting, and DATETIME of when.
+GO
 
 -- #8: Any comment about the Insert trigger above? How can we capture changes to Clients?
-CREATE TRIGGER trgAfterInsert ON [dbo].[Clients]
+CREATE TRIGGER trgAfterInsertUpdate ON [dbo].[Clients]
 FOR INSERT, UPDATE
 AS
 	declare @ClientID int;
 	declare @ClientName nvarchar(200);
     declare @Action varchar(200);
 
-set @Action = IFF(EXISTS(SELECT * FROM deleted), 'Updated', 'Inserted');
+set @Action = IIF(EXISTS(SELECT * FROM deleted), 'Updated', 'Inserted');
 select @ClientID=i.ClientID, @ClientName=i.ClientName from inserted i;
 insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime)
 values (@ClientID, @ClientName, SUSER_SNAME(), @Action, getdate());
+GO
+
+-- THIS IS REFACTORED
+CREATE TRIGGER trgAfterInsertUpdate ON [dbo].[Clients]
+FOR INSERT, UPDATE
+AS declare @Action varchar(200);
+
+set @Action = IIF(EXISTS(SELECT * FROM deleted), 'Updated', 'Inserted');
+
+insert into ClientAudit (ClientID, ClientName, UserID, Action, ActionTime)
+select i.ClientID, i.ClientName, SUSER_SNAME(), @Action, getdate() from inserted i;
+GO
