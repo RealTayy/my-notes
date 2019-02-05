@@ -1,21 +1,21 @@
 USE CONTACTBOOK;
 GO
 
-DROP TABLE phoneBook;
-DROP TABLE addressBook;
+DROP TABLE phoneNumbers;
+DROP TABLE addresses;
 DROP TABLE contacts;
 GO
 
 CREATE TABLE contacts (
 	ID INT PRIMARY KEY IDENTITY,
-	fname VARCHAR(192) NOT NULL,
+	fnames VARCHAR(192) NOT NULL,
 	lname VARCHAR(192) NOT NULL,
 	email VARCHAR(192),
 	birthday DATETIME
 );
 GO
 
-CREATE TABLE addressBook (
+CREATE TABLE addresses (
 	ID INT PRIMARY KEY IDENTITY,
 	contactID INT NOT NULL REFERENCES contacts(ID),
 	address1 VARCHAR(192) NOT NULL,
@@ -26,10 +26,10 @@ CREATE TABLE addressBook (
 );
 GO
 
-CREATE TABLE phoneBook (
+CREATE TABLE phoneNumbers (
 	ID INT PRIMARY KEY IDENTITY,
 	contactID INT NOT NULL REFERENCES contacts(ID),
 	type VARCHAR(200),
-	number INT NOT NULL,
+	number VARCHAR(16) NOT NULL,
 );
 GO

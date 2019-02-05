@@ -143,20 +143,23 @@ VALUES
 GO
 
 -- const startYear  = 2009
+-- const endYear = 2018
+-- const idLow = 11
+-- const idHigh = 11
+-- let numOfResults = 10
 
--- function pad(num) {
+-- function pad(num, pad = 2) {
 --     var s = num+"";
---     while (s.length < 2) s = "0" + s;
+--     while (s.length < pad) s = "0" + s;
 --     return s;
 -- }
 
--- let i= 30
--- while(i-- > 0) {
+-- while(numOfResults-- > 0) {
 
---   const id = (Math.random() >= 0.5) ? 11 : 12 ;
+--   const id = (Math.random() >= 0.5) ? idLow : idHigh ;
 --   const amount = 10 + Math.floor(Math.random() * Math.floor(1000)) + '.' + 
 --   pad(Math.floor(Math.random() * Math.floor(9)))
---   const year = startYear + 1 + Math.floor(Math.random() * Math.floor(2018 - startYear))
+--   const year = startYear + 1 + Math.floor(Math.random() * Math.floor(endYear - startYear))
 --   const month = pad(1 + Math.floor(Math.random() * Math.floor(12)))
 --   const day = pad(1 + Math.floor(Math.random() * Math.floor(25)))
 --   const hour = pad(1 + Math.floor(Math.random() * Math.floor(23)))

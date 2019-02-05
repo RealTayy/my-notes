@@ -554,3 +554,30 @@ HAVING condition --EX count(col_name)
 - IF_ELSE
 - IIF (Ternary)
 - CAST/CONVERT (DATETIME)
+
+<!-- const startYear  = 2009
+const endYear = 2018
+const idLow = 11
+const idHigh = 11
+let numOfResults = 10
+
+function pad(num, pad = 2) {
+    var s = num+"";
+    while (s.length < pad) s = "0" + s;
+    return s;
+}
+
+while(numOfResults-- > 0) {
+
+  const id = (Math.random() >= 0.5) ? idLow : idHigh ;
+  const amount = 10 + Math.floor(Math.random() * Math.floor(1000)) + '.' + 
+  pad(Math.floor(Math.random() * Math.floor(9)))
+  const year = startYear + 1 + Math.floor(Math.random() * Math.floor(endYear - startYear))
+  const month = pad(1 + Math.floor(Math.random() * Math.floor(12)))
+  const day = pad(1 + Math.floor(Math.random() * Math.floor(25)))
+  const hour = pad(1 + Math.floor(Math.random() * Math.floor(23)))
+  const minute = pad(1 + Math.floor(Math.random() * Math.floor(59)))
+  const second = pad(1 + Math.floor(Math.random() * Math.floor(59)))
+  const final = `(${id}, ${amount}, CONVERT(datetime, '${year}/${month}/${day} ${hour}:${minute}:${second}', 120)),`
+  console.log(final)
+} -->

@@ -24,6 +24,7 @@
     3. [SortedList](#sortedlist)
     4. [Stack](#stack)
     5. [Queue](#queue)
+8. [Functions](#functions)
 
 <a id="data-types"></a>
 ## Data Types
@@ -202,6 +203,15 @@ Dim myQueue As Queue = New Queue()
 myQueue.Enqueue(value) 'adds value to end of collection
 myQueue.Dequeue() 'remove and return value at beginning of collection
 ```
+
+<a id="functions"></a>
+## Functions
+```vbnet
+Function functionName(arg_one, ParamArray arg_arr As [DATATYPE]()) As [RETURNTYPE]
+    Return [RETURNVALUE]
+End Function
+```
+
 
 ### DO NOT UNDERSTAND PLS HALP:
 1. Directives? How it works and why would I use it.
