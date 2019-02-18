@@ -50,6 +50,8 @@
     5. [OUTER UNIQUE](#jouterunique)
 11. [Group by](#groupby)
     1. [HAVING](#having)
+12. [Views](#views)
+    
 <a id="database"></a>
 ## Datebase/Tables
 
@@ -535,6 +537,22 @@ FROM table_name
 GROUP BY col_name(s)
 HAVING condition --EX count(col_name)
 ```
+<a id="views"></a>
+## Views
+Creating/Replacing Views
+```SQL
+CREATE OR REPLACE VIEW CUSTOMERS_VIEW AS
+SELECT col_one, col_two
+FROM  table_name
+WHERE [condition]
+WITH CHECK OPTION;
+```
+Dropping Views
+```SQL
+DROP VIEW view_name;
+```
+
+
 
 ## Other stuff
 #### Things to look into:
@@ -555,29 +573,28 @@ HAVING condition --EX count(col_name)
 - IIF (Ternary)
 - CAST/CONVERT (DATETIME)
 
-<!-- const startYear  = 2009
-const endYear = 2018
-const idLow = 11
-const idHigh = 11
-let numOfResults = 10
+Declare Variables
+```sql
+DECLARE @find varchar(30);   
+/* Also allowed:   
+DECLARE @find varchar(30) = 'blah';   
+*/  
+SET @find = 'blah'; 
+```
 
-function pad(num, pad = 2) {
-    var s = num+"";
-    while (s.length < pad) s = "0" + s;
-    return s;
-}
-
-while(numOfResults-- > 0) {
-
-  const id = (Math.random() >= 0.5) ? idLow : idHigh ;
-  const amount = 10 + Math.floor(Math.random() * Math.floor(1000)) + '.' + 
-  pad(Math.floor(Math.random() * Math.floor(9)))
-  const year = startYear + 1 + Math.floor(Math.random() * Math.floor(endYear - startYear))
-  const month = pad(1 + Math.floor(Math.random() * Math.floor(12)))
-  const day = pad(1 + Math.floor(Math.random() * Math.floor(25)))
-  const hour = pad(1 + Math.floor(Math.random() * Math.floor(23)))
-  const minute = pad(1 + Math.floor(Math.random() * Math.floor(59)))
-  const second = pad(1 + Math.floor(Math.random() * Math.floor(59)))
-  const final = `(${id}, ${amount}, CONVERT(datetime, '${year}/${month}/${day} ${hour}:${minute}:${second}', 120)),`
-  console.log(final)
-} -->
+Stored Procedure
+```sql
+/*
+    Parameters:	@EmployeeID - ID to match EmployeeID by
+    Return:		Returns number of records deleted as INTEGER
+    Updated:	02.12.2019 -- Initial creation
+    Function:	Recieves a Name where @EmployeeID matches EmployeeID
+                from the atbv_Sales_Employees table
+*/
+CREATE OR ALTER PROCEDURE astp_Module_SubModule_Name @ArgOne [DATATYPE]
+AS
+BEGIN
+    -- Some code
+END
+GO
+```
