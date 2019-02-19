@@ -94,7 +94,7 @@ We have to create a complex aviw_Sales_OrdersLinesProducts view that will be use
 This view must retrieve data both from atbv_Sales_OrdersLines and atbv_Sales_Products views. Join those views on Domain and ProductID fields. Set "TotalQuantity" as an alias for Quantity field.
 ```sql
 CREATE OR ALTER VIEW aviw_Sales_OrdersLinesProducts AS
-SELECT p.Domain, p.ProductID, ol.Amount, p.ProductName, p.Supplier, p.Quantity TotalQuantity, p.PrimKey, p.Created, p.CreatedBy, p.Updated, p.UpdatedBy
+SELECT p.Domain, ol.ProductID, ol.Amount, p.ProductName, p.Supplier, p.Quantity TotalQuantity, ol.PrimKey, ol.Created, ol.CreatedBy, ol.Updated, ol.UpdatedBy
     FROM atbv_Sales_OrdersLines ol
     JOIN atbv_Sales_Products p
         ON ol.Domain = p.Domain
@@ -244,6 +244,7 @@ Edit existing Insert and Update triggers for atbl_Sales_OrdersLines table. When 
 
     /* If there is Understocked products return an error and rollback transaction */
     IF EXISTS (SELECT ProductName FROM @UnderstockedProducts)
+    BEGIN
         /* Create and concatinated string of all understocked products */
         DECLARE @ProductNames VARCHAR(MAX)
         SELECT @ProductNames = CONCAT_WS(', ',@ProductNames, ProductName)
@@ -251,6 +252,138 @@ Edit existing Insert and Update triggers for atbl_Sales_OrdersLines table. When 
         DECLARE @ErrorMsg VARCHAR(MAX) = CONCAT('---- There is not enough items (', @ProductNames,') left ----')
         RAISERROR (@ErrorMsg, 9, 1) ROLLBACK TRANSACTION
         RETURN
+    END
+```
+
+8.5	Exercise: Creating a new Products Register application
+=====
+Using Contact register app as an example, Appframe Web Documentation and online resources create a new application called Products Register. This application has to contain:  
+- Editable Table Grid (with insert, update, delete functions) of all products which are not out of stock at the moment;  
+- Standard search functionality;  
+- Distinct Filtering on Supplier column;  
+
+```html
+<!-- Main HTML -->
+<!--Padding to space from the navbar-->
+<div class="pt-5"></div>
+<div id="registerGridView" class="collapse show pt-1">
+    <div data-object-id="dsMain">
+        @Render("Block", ID: "blockGridView")
+    </div>
+</div>
+
+<!--blockGridView-->
+<div data-object-id='dsMain' class="row">
+    
+</div>
+<table data-grid2 class="table table-hover" id="gridMain" data-object-id="dsMain" data-layout-version="1" data-item-info-text="Products" data-header="Products" data-resize>
+    <thead>
+        <tr>
+            <th style="width:28px;" data-gridcolumn-chooser="#gridMain"></th>
+            <th style="width:200px;" data-sort-by="ProductName" title="Product name">Product name</th>
+            <th style="width:80px;" data-sort-by="Quantity" title="Quantity ">Quantity </th>
+            <th style="width:200px;" data-sort-by="Supplier" title="Supplier ">Supplier </th>
+            <th style="width:200px;" data-sort-by="Domain" title="Domain ">Domain </th>
+            <th style="width:28px"></th>
+        </tr>
+        <tr>
+            <td></td>
+            <td data-field-filter2="ProductName"></td>
+            <td data-field-filter2="Quantity"></td>
+            <td data-field-filter2="Supplier"></td>
+            <td data-field-filter2="Domain"></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-repeat data-show-new>
+            <td data-selection-cell></td>
+            <td><input data-field="ProductName" ></td>
+            <td><input data-field="Quantity" ></td>
+            <td><input data-field="Supplier" ></td>
+            <td><input data-field="Domain" ></td>
+            <td data-action-cell></td>
+        </tr>
+    </tbody>
+</table>
+```
+```javascript
+/* Main Script.js */
+(function(scope, undef) {
+    //Strict mode makes it easier to write "secure" JavaScript, that why main initial function is written in strict mode
+    "use strict";
+    let w = scope.window,
+        d = w.document,
+        af = w.af,
+        pageFirstLoad = true;
+
+    w.pageFirstLoad = pageFirstLoad;
+    
+    function clickEvents(){
+        //this function is for defining dom elements click events
+    }
+	
+    function handleEvents(){
+        //this function is for defining data source(s) events
+    }
+	
+    function applyUserSettings(){
+            //this function is for defining view from browser local storage and set it up
+        if (getLocalStorageMetaData()) {
+            if(getLocalStorageMetaData().ViewMode == "List" || af.common.isMobile()){
+                changeToListView();
+            } else {
+                changeToGridView();
+            }
+        } 
+    }
+
+	function initialize() {
+	//Main initialize function to load main data source and call required functions
+	    applyUserSettings();
+		dsMain.refreshDataSource();
+	
+        clickEvents();
+        handleEvents();
+        // Initializes Main Grid
+        initMainGrid()
+		
+		pageFirstLoad = false;
+	}
+	
+	// This code is for calling initialize function
+	$(function(){
+    	initialize();
+    });
+
+}(this));
+
+/* functionSpecific.js */
+// function for handling date format
+function formatLocalDate(date) {
+    if (isNaN(Date.parse(date))) {return date;}
+    if (date === null) {return '';}
+    return formatDateToLocalCulture(date); //
+}
+
+//function for updating browser local storage Meta Data
+function updateLocalStorageMetaData(pViewMode, pLeftSideBar, pRightSideBar){
+    af.common.localStorage.set(af.article.id, {ViewMode: pViewMode, LeftSideBar: pLeftSideBar, RightSideBar: pRightSideBar}, false);
+}
+
+//function for geting local storage Meta Data
+function getLocalStorageMetaData(){
+    return af.common.localStorage.get(af.article.id);
+}
+
+//function for adding contact-details link to dom element
+function escapeHref(pRow, pElement) {
+    //pRow current Data source row
+    var vItem = ((pElement !== null) ? $(pElement) : $(this));
+    window.requestAnimationFrame(function(){
+        $(vItem).attr('href', 'contacts-details?ContactID=' + encodeURIComponent(pRow.ContactID));
+    });
+}
 ```
 
 ## MISC NOTES/TL;DR
