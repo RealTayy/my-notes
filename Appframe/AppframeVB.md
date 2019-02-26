@@ -6,6 +6,7 @@
 
 1. [afDataObject](#afDataObject)
     1. [Auto load on launch/Refresh Data](#afDataObject-auto)
+2. [Creating Master-Detail view](#master-detail-view)
 
 
 <div id="afDataObject"></div>
@@ -50,5 +51,33 @@ Private Sub function_name(sender As Object, e As EventArgs) Handles form_element
 Genreate new PrimKey
 `newid()`
 
-## Permissions
-### User Table Permissions
+<a id="master-detail-view"></a>
+
+## Creating Master-Detail view
+```vbnet
+Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
+    'Refresh afDataObjects
+    atbv_Contact_Contacts.RefreshDataSource()
+    atbv_Contact_Addresses.RefreshDataSource()
+
+    'Create Empty DataSet
+    Dim vDetailDataSet As New DataSet()
+
+    'Extract DataSource objects from afDataObjects and convert them to DataTable Objects
+    Dim vContactDataTable = CType(atbv_Contact_Contacts.DataSource, DataTable)
+    Dim vAddressDataTable = CType(atbv_Contact_Addresses.DataSource, DataTable)
+
+    'Add DataTables to DataSet
+    vDetailDataSet.Tables.Add(vContactDataTable)
+    vDetailDataSet.Tables.Add(vAddressDataTable)
+
+    'Set up Master-detail relationship between DataTables
+    Dim vMasterKeyCol As DataColumn = vDetailDataSet.Tables("atbv_Contact_Contacts").Columns("ContactID")
+    Dim vForeignKeyCol As DataColumn = vDetailDataSet.Tables("atbv_Contact_Addresses").Columns("ContactID")
+    vDetailDataSet.Relations.Add("Addresses", vMasterKeyCol, vForeignKeyCol)
+
+    'Bind afGrid to DataSet's primary/master table        
+    AfGrid1.DataSource = vDetailDataSet.Tables("atbv_Contact_Contacts")
+
+End Sub
+```
