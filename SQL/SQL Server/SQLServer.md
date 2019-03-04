@@ -51,6 +51,7 @@
 11. [Group by](#groupby)
     1. [HAVING](#having)
 12. [Views](#views)
+13. [Stored Procedures](#stp)
     
 <a id="database"></a>
 ## Datebase/Tables
@@ -541,7 +542,7 @@ HAVING condition --EX count(col_name)
 ## Views
 Creating/Replacing Views
 ```SQL
-CREATE OR REPLACE VIEW CUSTOMERS_VIEW AS
+CREATE OR ALTER VIEW CUSTOMERS_VIEW AS
 SELECT col_one, col_two
 FROM  table_name
 WHERE [condition]
@@ -582,7 +583,9 @@ DECLARE @find varchar(30) = 'blah';
 SET @find = 'blah'; 
 ```
 
-Stored Procedure
+<a id="stp"></a>
+
+## Stored Procedure
 ```sql
 /*
     Parameters:	@EmployeeID - ID to match EmployeeID by
@@ -597,4 +600,6 @@ BEGIN
     -- Some code
 END
 GO
+
+EXEC sp_1 @myDate = ?, @ServerName = ?
 ```
