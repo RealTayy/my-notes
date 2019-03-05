@@ -6,6 +6,8 @@
 
 1. [afDataObject](#afDataObject)
     1. [Auto load on launch/Refresh Data](#afDataObject-auto)
+    2. [Get Col/Row value](#afDataObject-get-val)
+2. [Open New Form Tab](#open-new-tab)
 2. [Creating Master-Detail view](#master-detail-view)
 3. [Executing Stored Procedure](#stored-procedure)
 4. [Loaders](#loaders)
@@ -23,7 +25,16 @@
 atbv_Sales_Contacts.RefreshDataSource()
 ```
 
-### Open Form onClick
+<a id="afDataObject-get-val"></a>
+
+### Get val
+```vbnet
+aviw_Contact_ContactsRelations.CurrentRow("FieldName")
+```
+
+<a id="a#open-new-tab"></a>
+
+## Open new Form
 ```vbnet
 CR3.OpenForm("App.Database.ProjectName", "FormName")
 ```
